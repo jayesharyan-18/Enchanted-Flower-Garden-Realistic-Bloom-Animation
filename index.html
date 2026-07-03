@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Enchanted Flower Garden – Realistic Bloom Animation</title>
+  <meta name="description" content="A stunning procedural flower growth animation with realistic physics, wind, and multiple flower species rendered on HTML5 Canvas." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="index.css" />
+</head>
+<body>
+  <canvas id="garden-canvas"></canvas>
+  <!-- Ambient Overlay -->
+  <div id="ambient-overlay"></div>
+  <!-- Floating Particles Layer -->
+  <div id="particle-layer"></div>
+  <!-- Control Panel -->
+  <aside id="control-panel" class="glass-card">
+    <div class="panel-header">
+      <div class="panel-logo">🌸</div>
+      <div>
+        <h1 class="panel-title">Enchanted Garden</h1>
+        <p class="panel-subtitle">Realistic Flower Simulation</p>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label">🌼 Flower Type</label>
+      <div class="flower-selector" id="flower-selector">
+        <button class="flower-btn active" data-type="rose" id="btn-rose">🌹 Rose</button>
+        <button class="flower-btn" data-type="daisy" id="btn-daisy">🌼 Daisy</button>
+        <button class="flower-btn" data-type="tulip" id="btn-tulip">🌷 Tulip</button>
+        <button class="flower-btn" data-type="sunflower" id="btn-sunflower">🌻 Sunflower</button>
+        <button class="flower-btn" data-type="cherry" id="btn-cherry">🌸 Cherry</button>
+        <button class="flower-btn" data-type="random" id="btn-random">🎲 Random</button>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="wind-slider">💨 Wind Speed <span id="wind-val">2</span></label>
+      <input type="range" id="wind-slider" class="slider" min="0" max="10" value="2" step="0.1" />
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="growth-slider">🌱 Growth Speed <span id="growth-val">5</span></label>
+      <input type="range" id="growth-slider" class="slider" min="1" max="10" value="5" step="0.5" />
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="petal-slider">🌺 Petal Count <span id="petal-val">8</span></label>
+      <input type="range" id="petal-slider" class="slider" min="4" max="16" value="8" step="1" />
+    </div>
+    <div class="control-group">
+      <label class="control-label">🌅 Ambience</label>
+      <div class="ambience-btns">
+        <button class="amb-btn active" id="amb-day" data-mode="day">☀️ Day</button>
+        <button class="amb-btn" id="amb-sunset" data-mode="sunset">🌇 Sunset</button>
+        <button class="amb-btn" id="amb-night" data-mode="night">🌙 Night</button>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label">🌾 Pollen Particles <span id="pollen-toggle-label">On</span></label>
+      <label class="toggle-switch">
+        <input type="checkbox" id="pollen-toggle" checked />
+        <span class="toggle-track"></span>
+      </label>
+    </div>
+    <div class="action-buttons">
+      <button id="btn-plant-random" class="action-btn primary">🌱 Plant 5 Random</button>
+      <button id="btn-clear" class="action-btn danger">🗑️ Clear Garden</button>
+    </div>
+    <div class="hint-text">💡 Click anywhere on canvas to plant a flower</div>
+  </aside>
+  <!-- Stats -->
+  <div id="stats-bar" class="glass-card-mini">
+    <span>🌸 Flowers: <strong id="stat-flowers">0</strong></span>
+    <span>✨ Particles: <strong id="stat-particles">0</strong></span>
+    <span>💨 Wind: <strong id="stat-wind">2.0</strong></span>
+  </div>
+  <script src="index.js"></script>
+</body>
+</html>
