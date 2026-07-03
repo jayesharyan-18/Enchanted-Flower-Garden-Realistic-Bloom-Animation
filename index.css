@@ -1,0 +1,343 @@
+/* ─── Enchanted Flower Garden ─ index.css ───────────────────────────── */
+/* ── Imports & Tokens ─────────────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+:root {
+  --font: 'Outfit', sans-serif;
+  /* Day theme */
+  --bg-top-day: #87ceeb;
+  --bg-bot-day: #d4f5a0;
+  /* Sunset theme */
+  --bg-top-sunset: #ff6b35;
+  --bg-bot-sunset: #f7c59f;
+  /* Night theme */
+  --bg-top-night: #0a0a2e;
+  --bg-bot-night: #1a1a4e;
+  /* Current (default day) */
+  --bg-top: var(--bg-top-day);
+  --bg-bot: var(--bg-bot-day);
+  /* Glass */
+  --glass-bg: rgba(255,255,255,0.12);
+  --glass-border: rgba(255,255,255,0.28);
+  --glass-shadow: 0 8px 32px rgba(0,0,0,0.25);
+  --glass-blur: blur(18px);
+  /* Accent */
+  --accent: #ff6eb4;
+  --accent-2: #a78bfa;
+  --danger: #f87171;
+  --primary: #34d399;
+  --text: rgba(255,255,255,0.95);
+  --text-dim: rgba(255,255,255,0.6);
+  --radius: 16px;
+  --radius-sm: 10px;
+  --transition: 0.3s cubic-bezier(0.4,0,0.2,1);
+}
+/* ── Reset & Base ─────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  width: 100%; height: 100%;
+  overflow: hidden;
+  font-family: var(--font);
+  background: linear-gradient(180deg, var(--bg-top) 0%, var(--bg-bot) 100%);
+  transition: background 1s ease;
+  user-select: none;
+}
+/* ── Canvas ───────────────────────────────────────────────────────────── */
+#garden-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  cursor: crosshair;
+  z-index: 1;
+}
+/* ── Ambient Overlay ─────────────────────────────────────────────────── */
+#ambient-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  transition: background 1s ease;
+}
+body.theme-day     #ambient-overlay { background: radial-gradient(ellipse at 80% 5%, rgba(255,255,200,0.18) 0%, transparent 60%); }
+body.theme-sunset  #ambient-overlay { background: radial-gradient(ellipse at 90% 10%, rgba(255,120,50,0.35) 0%, transparent 65%); }
+body.theme-night   #ambient-overlay { background: radial-gradient(ellipse at 20% 5%, rgba(180,180,255,0.12) 0%, transparent 55%); }
+/* ── Glass Card (Control Panel) ──────────────────────────────────────── */
+.glass-card {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  width: 280px;
+  max-height: calc(100vh - 40px);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--glass-border) transparent;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border-radius: var(--radius);
+  box-shadow: var(--glass-shadow);
+  padding: 20px;
+  z-index: 10;
+  color: var(--text);
+  animation: slideIn 0.6s cubic-bezier(0.4,0,0.2,1) both;
+}
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(30px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+/* ── Panel Header ─────────────────────────────────────────────────────── */
+.panel-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 22px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--glass-border);
+}
+.panel-logo {
+  font-size: 2rem;
+  animation: bloom 3s ease-in-out infinite alternate;
+}
+@keyframes bloom {
+  from { transform: scale(1) rotate(-5deg); }
+  to   { transform: scale(1.15) rotate(5deg); }
+}
+.panel-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+  background: linear-gradient(135deg, #fff 0%, var(--accent) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.panel-subtitle {
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  font-weight: 400;
+  margin-top: 1px;
+}
+/* ── Control Groups ───────────────────────────────────────────────────── */
+.control-group {
+  margin-bottom: 18px;
+}
+.control-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: 9px;
+}
+.control-label span {
+  color: var(--accent);
+  font-weight: 700;
+  margin-left: auto;
+  font-size: 0.85rem;
+  text-transform: none;
+  letter-spacing: 0;
+}
+/* ── Flower Selector Buttons ─────────────────────────────────────────── */
+.flower-selector {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 7px;
+}
+.flower-btn {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 8px 6px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--transition);
+  text-align: center;
+}
+.flower-btn:hover {
+  background: rgba(255,255,255,0.18);
+  border-color: var(--accent);
+  transform: translateY(-1px);
+}
+.flower-btn.active {
+  background: linear-gradient(135deg, rgba(255,110,180,0.4), rgba(167,139,250,0.4));
+  border-color: var(--accent);
+  box-shadow: 0 0 14px rgba(255,110,180,0.4);
+  font-weight: 600;
+}
+/* ── Sliders ─────────────────────────────────────────────────────────── */
+.slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  border-radius: 99px;
+  background: rgba(255,255,255,0.15);
+  outline: none;
+  cursor: pointer;
+  transition: background var(--transition);
+}
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(255,110,180,0.5);
+  transition: transform var(--transition), box-shadow var(--transition);
+}
+.slider::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+  box-shadow: 0 2px 16px rgba(255,110,180,0.7);
+}
+/* ── Ambience Buttons ─────────────────────────────────────────────────── */
+.ambience-btns {
+  display: flex;
+  gap: 7px;
+}
+.amb-btn {
+  flex: 1;
+  padding: 8px 4px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 0.72rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+.amb-btn:hover { background: rgba(255,255,255,0.18); transform: translateY(-1px); }
+.amb-btn.active {
+  background: linear-gradient(135deg, rgba(255,200,50,0.35), rgba(255,150,50,0.35));
+  border-color: #ffcc44;
+  box-shadow: 0 0 12px rgba(255,200,50,0.4);
+}
+/* ── Toggle Switch ───────────────────────────────────────────────────── */
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 46px;
+  height: 24px;
+  cursor: pointer;
+}
+.toggle-switch input { opacity: 0; width: 0; height: 0; }
+.toggle-track {
+  position: absolute;
+  inset: 0;
+  background: rgba(255,255,255,0.15);
+  border-radius: 99px;
+  transition: background var(--transition);
+  border: 1px solid rgba(255,255,255,0.2);
+}
+.toggle-track::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #fff;
+  transition: transform var(--transition);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+}
+.toggle-switch input:checked + .toggle-track { background: linear-gradient(135deg, var(--primary), var(--accent-2)); }
+.toggle-switch input:checked + .toggle-track::after { transform: translateX(22px); }
+/* ── Action Buttons ───────────────────────────────────────────────────── */
+.action-buttons {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.action-btn {
+  flex: 1;
+  padding: 10px 8px;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-family: var(--font);
+  font-size: 0.73rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition);
+  letter-spacing: 0.2px;
+}
+.action-btn.primary {
+  background: linear-gradient(135deg, #34d399, #059669);
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(52,211,153,0.4);
+}
+.action-btn.primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(52,211,153,0.6);
+}
+.action-btn.danger {
+  background: linear-gradient(135deg, #f87171, #dc2626);
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(248,113,113,0.4);
+}
+.action-btn.danger:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(248,113,113,0.6);
+}
+.action-btn:active { transform: translateY(0) scale(0.97); }
+/* ── Hint Text ────────────────────────────────────────────────────────── */
+.hint-text {
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  text-align: center;
+  padding: 10px;
+  background: rgba(255,255,255,0.05);
+  border-radius: var(--radius-sm);
+  border: 1px dashed rgba(255,255,255,0.15);
+  animation: pulse-hint 2.5s ease-in-out infinite;
+}
+@keyframes pulse-hint {
+  0%, 100% { opacity: 0.6; }
+  50%       { opacity: 1; }
+}
+/* ── Stats Bar ────────────────────────────────────────────────────────── */
+.glass-card-mini {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border-radius: 99px;
+  padding: 10px 24px;
+  z-index: 10;
+  color: var(--text);
+  display: flex;
+  gap: 28px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  box-shadow: var(--glass-shadow);
+  white-space: nowrap;
+  animation: slideUp 0.6s cubic-bezier(0.4,0,0.2,1) both 0.2s;
+}
+@keyframes slideUp {
+  from { opacity: 0; transform: translate(-50%, 20px); }
+  to   { opacity: 1; transform: translate(-50%, 0); }
+}
+.glass-card-mini strong { color: var(--accent); }
+/* ── Theme Transitions ─────────────────────────────────────────────────── */
+body.theme-day    { background: linear-gradient(180deg, #87ceeb 0%, #d4f5a0 100%); }
+body.theme-sunset { background: linear-gradient(180deg, #ff6b35 0%, #f7c59f 60%, #d4a574 100%); }
+body.theme-night  { background: linear-gradient(180deg, #0a0a2e 0%, #1a1a4e 60%, #2d1b69 100%); }
+/* ── Responsive ────────────────────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .glass-card { right: 10px; top: 10px; width: 240px; padding: 14px; }
+  .glass-card-mini { gap: 14px; padding: 8px 16px; font-size: 0.7rem; }
+}
